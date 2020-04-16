@@ -24,15 +24,15 @@
 #include <netinet/in.h>  
 #include <arpa/inet.h>  
 #include <netinet/in.h>  
-
+#include "config.h"
 
 char rbuf[500];  
- 
+static int sockfd;  
 void *udp_rece_thread(void *arg)  
 {  
-    int sockfd;  
+     
     int size;  
-    int ret;  
+    int ret, len = 0;  
     int on =1;  
     struct sockaddr_in saddr;  
     struct sockaddr_in raddr;  
@@ -68,15 +68,41 @@ void *udp_rece_thread(void *arg)
     while(1)  
     {  
         puts("waiting data");  
-        ret=recvfrom(sockfd,rbuf,500,0,(struct sockaddr*)&raddr,&val);  
-        if(ret <0)  
+        len=recvfrom(sockfd,rbuf,500,0,(struct sockaddr*)&raddr,&val);  
+        if(len <0)  
         {  
             perror("recvfrom failed");  
         }  
-  
+        send_udp(rbuf, len);
         printf("the data :%s\n",rbuf);  
         bzero(rbuf,500);  
     }  
     //关闭udp套接字，这里不可达的。  
     close(sockfd);  
 } 
+
+
+
+int send_udp(u8 *pdat, u32 len)  
+{  
+    int ret = 0;
+    struct sockaddr_in saddr; 
+
+    saddr.sin_family = AF_INET;  
+    saddr.sin_port = htons(16899);   
+    saddr.sin_addr.s_addr = inet_addr("192.168.1.104");//172.16.2.6为服务端所在的ip 
+
+       // puts("please enter data:");  
+       // scanf("%s",wbuf);  
+        ret=sendto(sockfd, pdat, len, 0, (struct sockaddr*)&saddr,  
+            sizeof(struct sockaddr));  
+        if(ret<0)  
+        {  
+            perror("sendto failed");  
+            return -1;
+        }  
+      return 1;
+     
+}  
+
+
