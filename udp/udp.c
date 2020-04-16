@@ -24,7 +24,7 @@
 #include <netinet/in.h>  
 #include <arpa/inet.h>  
 #include <netinet/in.h>  
-#include "config.h"
+#include "udp.h"
 
 char rbuf[500];  
 static int sockfd;  
@@ -73,7 +73,7 @@ void *udp_rece_thread(void *arg)
         {  
             perror("recvfrom failed");  
         }  
-        send_udp(rbuf, len);
+        send_udp(rbuf, len, 16899);
         printf("the data :%s\n",rbuf);  
         bzero(rbuf,500);  
     }  
@@ -83,13 +83,13 @@ void *udp_rece_thread(void *arg)
 
 
 
-int send_udp(u8 *pdat, u32 len)  
+int send_udp(u8 *pdat, u32 len, int port)  
 {  
     int ret = 0;
     struct sockaddr_in saddr; 
 
     saddr.sin_family = AF_INET;  
-    saddr.sin_port = htons(16899);   
+    saddr.sin_port = htons(port);   
     saddr.sin_addr.s_addr = inet_addr("192.168.1.104");//172.16.2.6为服务端所在的ip 
 
        // puts("please enter data:");  

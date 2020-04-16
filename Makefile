@@ -6,9 +6,9 @@ LD				:= $(CROSS_COMPILE)ld
 OBJCOPY 		:= $(CROSS_COMPILE)objcopy
 OBJDUMP 		:= $(CROSS_COMPILE)objdump
 
-INCDIRS 		:= ./ udp thread
+INCDIRS 		:= ./ udp thread app
 				   			   
-SRCDIRS			:= ./ udp thread
+SRCDIRS			:= ./ udp thread app
 				   
 				   
 INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))
